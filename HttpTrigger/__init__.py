@@ -6,9 +6,13 @@ import azure.functions as func
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('HTTP trigger function processed a request.')
 
+    data = req.get_json()
     # Extract parameters from the query string
-    space = req.params.get('space')
-    ingestion_type = req.params.get('type')
+    space = data['space']
+    ingestion_type = data['type']
+
+    logging.info(space)
+    logging.info(ingestion_type)
 
     if not space or not ingestion_type:
         return func.HttpResponse(
