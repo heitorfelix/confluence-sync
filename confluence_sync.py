@@ -87,7 +87,9 @@ class ConfluenceSync:
         title = data['title']
         body_content = data['body']['storage']['value']
         created_date = data['version']['when']
-        return title, body_content, created_date
+        page_url = f"https://sapiensia.atlassian.net/wiki/spaces/{self.space}/pages/{page_id}"
+
+        return title, body_content, created_date, page_url
 
     def get_updated_page_content(self, page_id: str) -> Tuple[str, str, str]:
         """
@@ -136,10 +138,10 @@ class ConfluenceSync:
         """
         try:
             # Get page content
-            title, content, created_date = self.get_page_content(page_id)
+            title, content, created_date, page_url = self.get_page_content(page_id)
             # Define blob name based on path and title
             blob_name = os.path.join(path, f"{title}.html").replace("\\", "/")
-            metadata = {'created_date': created_date}
+            metadata = {'created_date': created_date, "page_url" : page_url}
             # Upload content to Azure Blob Storage
             self.upload_to_azure_blob(content, blob_name, metadata)
             # Get child pages and process them recursively
@@ -180,12 +182,12 @@ class ConfluenceSync:
             page_ids = [result['content']['id'] for result in results['results']]
             for page_id in page_ids:
                 # Get content and path
-                title, body_content, created_date = self.get_page_content(page_id)
+                title, body_content, created_date, page_url = self.get_page_content(page_id)
                 # Build full path
                 path = self.build_full_path(page_id)
                 # Define blob name based on path and title
                 blob_name = os.path.join(path, f"{title}.html").replace("\\", "/")
-                metadata = {'created_date': created_date}
+                metadata = {'created_date': created_date, "page_url" : page_url}
                 # Save HTML to full path
                 self.upload_to_azure_blob(body_content, blob_name, metadata)
         except Exception as e:

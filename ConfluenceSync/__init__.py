@@ -6,13 +6,21 @@ import azure.functions as func
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('HTTP trigger function processed a request.')
 
-    data = req.get_json()
-    # Extract parameters from the query string
-    space = data['space']
-    ingestion_type = data['type']
+    try:
+        data = req.get_json()
+        # Extract parameters from the query string
+            
+        space = data['space']
+        ingestion_type = data['type']
 
-    logging.info(space)
-    logging.info(ingestion_type)
+        logging.info(space)
+        logging.info(ingestion_type)
+
+    except Exception as e:
+        return func.HttpResponse(
+            str(e),
+            status_code=400
+        )
 
     if not space or not ingestion_type:
         return func.HttpResponse(
