@@ -19,7 +19,7 @@ class ConfluenceSync:
         self.confluence = Confluence(url=self.base_url, username=self.username, password=self.token)
         self.azure_connection_string = os.getenv("STORAGE_CONNECTION_STRING")
         self.auth = HTTPBasicAuth(self.username, self.token)
-        self.container_name = 'confluence-public' if self.space == 'SIA' else 'confluence-private'
+        self.container_name = 'public' if self.space == 'SIA' else 'private'
         self.blob_service_client = BlobServiceClient.from_connection_string(self.azure_connection_string)
         self.container_client = self.blob_service_client.get_container_client(self.container_name)
         self._create_container()
