@@ -1,0 +1,5 @@
+requests
+python-dotenv
+azure-functions
+azure-storage-blob
+atlassian-python-api
